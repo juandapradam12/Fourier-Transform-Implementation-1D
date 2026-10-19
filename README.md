@@ -66,16 +66,18 @@ src/fourier_1d/
   signals.py     # synthetic multi-tone fixtures
   io.py          # two-column time-series load/save
 examples/
-  run_demo.py    # end-to-end plot + NumPy error report
-tests/           # agreement with numpy.fft and Parseval checks
-docs/            # use-case write-up with equations
+  run_demo.py         # end-to-end plot + NumPy error report
+  run_benchmark.py    # DFT vs FFT vs NumPy runtime comparison
+tests/                # agreement with numpy.fft and Parseval checks
+docs/                 # use-case write-up with equations
+.github/workflows/    # CI (pytest on Python 3.10–3.12)
 ```
 
 Design choices:
 
 - **Separation of concerns** — transform kernels, spectral helpers, and signal fixtures are independent modules.
-- **Explicit algorithms** — matrix DFT preserves the original pedagogical intent; FFT adds the practical complexity class.
-- **Reference validation** — every transform path is checked against `numpy.fft` in automated tests.
+- **Explicit algorithms** — matrix DFT preserves the original pedagogical intent; an iterative radix-2 FFT adds the practical $O(N\log N)$ path without recursion.
+- **Reference validation** — every transform path is checked against `numpy.fft` in automated tests (GitHub Actions CI on Python 3.10–3.12).
 - **Reproducible demo signal** — replaces the unversioned `funcion.dat` from the legacy script.
 
 ---
@@ -88,7 +90,9 @@ source .venv/bin/activate
 pip install -e ".[dev]"
 pytest
 python examples/run_demo.py
+python examples/run_benchmark.py
 ```
+
 
 Minimal API usage:
 
@@ -107,6 +111,10 @@ X = fft(y)
 On the bundled multi-tone demo ($5\,\mathrm{Hz}$ + $12\,\mathrm{Hz}$), the custom FFT matches `numpy.fft.fft` to machine precision (max absolute error $\sim 10^{-14}$). Magnitude peaks appear at the injected tones; round-trip DFT ↔ IDFT recovers the original samples.
 
 ![Time series and magnitude spectrum for the demo multi-tone signal](docs/figures/spectrum_demo.png)
+
+Runtime on increasing power-of-two lengths shows the expected complexity gap between the matrix DFT and the iterative FFT (NumPy remains the highly optimized baseline):
+
+![Runtime comparison of matrix DFT, iterative FFT, and NumPy FFT](docs/figures/benchmark_runtime.png)
 
 ---
 

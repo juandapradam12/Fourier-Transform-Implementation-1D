@@ -24,9 +24,17 @@ def test_fft_matches_numpy_power_of_two(tone: np.ndarray) -> None:
     np.testing.assert_allclose(fft(tone), np.fft.fft(tone), rtol=1e-10, atol=1e-10)
 
 
+@pytest.mark.parametrize("n", [1, 2, 4, 8, 64, 256])
+def test_iterative_fft_matches_numpy_for_powers_of_two(n: int) -> None:
+    rng = np.random.default_rng(n)
+    x = rng.normal(size=n) + 1j * rng.normal(size=n)
+    np.testing.assert_allclose(fft(x), np.fft.fft(x), rtol=1e-10, atol=1e-10)
+
+
 def test_fft_falls_back_for_non_power_of_two() -> None:
     x = np.linspace(0.0, 1.0, 30)
     np.testing.assert_allclose(fft(x), np.fft.fft(x), rtol=1e-10, atol=1e-10)
+
 
 
 def test_idft_roundtrip(tone: np.ndarray) -> None:

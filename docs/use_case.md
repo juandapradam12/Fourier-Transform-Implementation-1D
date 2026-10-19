@@ -29,13 +29,13 @@ $$
 X = W x, \qquad W_{kn} = \exp\!\left(-2\pi i \frac{kn}{N}\right).
 $$
 
-Radix-2 FFT (complexity $O(N \log N)$ when $N$ is a power of two) splits even/odd indices and applies twiddle factors
+The iterative radix-2 FFT (complexity $O(N \log N)$ when $N$ is a power of two) bit-reverses the input, then applies butterfly stages with twiddle factors
 
 $$
 \omega_n = e^{-2\pi i n / N}.
 $$
 
-Non-power-of-two lengths fall back to the matrix DFT so the public `fft` API remains total.
+Non-power-of-two lengths fall back to the matrix DFT so the public `fft` API remains total. A small benchmark (`examples/run_benchmark.py`) contrasts wall time of DFT, iterative FFT, and `numpy.fft` to make the complexity gap observable.
 
 ## Signal model used in the demo
 

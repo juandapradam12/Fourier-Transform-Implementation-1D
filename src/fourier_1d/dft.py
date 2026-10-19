@@ -1,7 +1,8 @@
 """Discrete Fourier Transform (DFT) and Fast Fourier Transform (FFT).
 
-The matrix DFT mirrors the classic $O(N^2)$ definition; the radix-2 FFT
-recovers the familiar $O(N \\log N)$ complexity for power-of-two lengths.
+The matrix DFT mirrors the classic $O(N^2)$ definition; the iterative
+radix-2 FFT recovers the familiar $O(N \\log N)$ complexity for
+power-of-two lengths without recursion.
 """
 
 from __future__ import annotations
@@ -70,19 +71,43 @@ def _is_power_of_two(n: int) -> bool:
     return n > 0 and (n & (n - 1)) == 0
 
 
-def _fft_recursive(x: NDArray[np.complex128]) -> NDArray[np.complex128]:
-    n = x.size
-    if n == 1:
-        return x.copy()
+def _bit_reverse_indices(n: int) -> NDArray[np.intp]:
+    """Permutation that places index ``i`` at its bit-reversed position."""
+    bits = n.bit_length() - 1
+    indices = np.arange(n, dtype=np.intp)
+    reversed_bits = np.zeros(n, dtype=np.intp)
+    for _ in range(bits):
+        reversed_bits = (reversed_bits << 1) | (indices & 1)
+        indices >>= 1
+    return reversed_bits
 
-    even = _fft_recursive(x[0::2])
-    odd = _fft_recursive(x[1::2])
-    twiddle = np.exp(-2j * np.pi * np.arange(n // 2) / n)
-    return np.concatenate([even + twiddle * odd, even - twiddle * odd])
+
+def _fft_iterative(x: NDArray[np.complex128]) -> NDArray[np.complex128]:
+    """Iterative radix-2 Cooley–Tukey FFT with bit-reversal reordering.
+
+    Stages are walked iteratively (no recursion). Within each stage the
+    butterfly blocks are evaluated with vectorized NumPy operations.
+    """
+    n = x.size
+    out = x[_bit_reverse_indices(n)].copy()
+
+    span = 2
+    while span <= n:
+        half = span // 2
+        twiddles = np.exp(-2j * np.pi * np.arange(half) / span)
+        blocks = out.reshape(-1, span)
+        even = blocks[:, :half].copy()
+        odd = blocks[:, half:] * twiddles
+        blocks[:, :half] = even + odd
+        blocks[:, half:] = even - odd
+        out = blocks.reshape(n)
+        span *= 2
+
+    return out
 
 
 def fft(signal: ArrayLike) -> NDArray[np.complex128]:
-    """Radix-2 Cooley–Tukey FFT for power-of-two lengths.
+    """Iterative radix-2 Cooley–Tukey FFT for power-of-two lengths.
 
     Falls back to :func:`dft` when ``N`` is not a power of two, so callers
     always receive a correct spectrum.
@@ -90,7 +115,7 @@ def fft(signal: ArrayLike) -> NDArray[np.complex128]:
     x = _as_1d_complex(signal)
     if not _is_power_of_two(x.size):
         return dft(x)
-    return _fft_recursive(x)
+    return _fft_iterative(x)
 
 
 def ifft(spectrum: ArrayLike) -> NDArray[np.complex128]:
