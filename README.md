@@ -1,8 +1,8 @@
-# 1-D Fourier Transform Implementation
+# Fourier 1D
 
-A from-scratch **Discrete Fourier Transform (DFT)** and **radix-2 FFT** toolkit in Python, built to demonstrate numerical signal analysis with clean architecture and reproducible validation against NumPy.
+From-scratch **1-D Discrete Fourier Transform (DFT)** and **iterative radix-2 FFT** in Python — a small signal-analysis package with clean architecture, NumPy-validated spectra, and runtime benchmarks that make the $O(N^2)$ vs $O(N\log N)$ trade-off visible.
 
-This repository reframes an early academic script into a portfolio-ready use case: implement the Fourier transform from first principles, expose a small analysis API, and verify spectral results on a controlled multi-tone signal.
+Built as a portfolio use case from an early academic script: implement the transform from first principles, expose a focused analysis API, and verify results on a controlled multi-tone signal.
 
 ---
 
