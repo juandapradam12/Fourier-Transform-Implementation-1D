@@ -123,9 +123,3 @@ Runtime on increasing power-of-two lengths shows the expected complexity gap bet
 - Python ≥ 3.10
 - NumPy ≥ 1.24
 - Optional: Matplotlib (demo), pytest (tests)
-
----
-
-## License
-
-MIT — see [`LICENSE`](LICENSE).
