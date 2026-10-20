@@ -1,6 +1,6 @@
 # Fourier 1D
 
-From-scratch **1-D Discrete Fourier Transform (DFT)** and **iterative radix-2 FFT** in Python — a small signal-analysis package with clean architecture, NumPy-validated spectra, and runtime benchmarks that make the $O(N^2)$ vs $O(N\log N)$ trade-off visible.
+From-scratch **1-D Discrete Fourier Transform (DFT)** and **iterative radix-2 FFT** in Python — a small signal-analysis package with clean architecture, NumPy-validated spectra, and runtime benchmarks that make the $`O(N^2)`$ vs $`O(N\log N)`$ trade-off visible.
 
 Built as a portfolio use case from an early academic script: implement the transform from first principles, expose a focused analysis API, and verify results on a controlled multi-tone signal.
 
@@ -8,7 +8,7 @@ Built as a portfolio use case from an early academic script: implement the trans
 
 ## Use case
 
-Given a discrete time series $x[n]$, recover its frequency content $X[k]$ without relying on a black-box FFT for the core transform. The project targets workflows where transparency matters—teaching checks, method audits, or lightweight spectral exploration—while remaining numerically comparable to `numpy.fft`.
+Given a discrete time series $`x[n]`$, recover its frequency content $`X[k]`$ without relying on a black-box FFT for the core transform. The project targets workflows where transparency matters—teaching checks, method audits, or lightweight spectral exploration—while remaining numerically comparable to `numpy.fft`.
 
 Typical flow:
 
@@ -21,14 +21,14 @@ Typical flow:
 
 ## Mathematical formulation
 
-The length-$N$ forward DFT is
+The length-$`N`$ forward DFT is
 
 $$
 X_k = \sum_{n=0}^{N-1} x_n \, e^{-2\pi i kn / N},
 \qquad k = 0,\ldots,N-1.
 $$
 
-In matrix form, $X = W x$ with entries
+In matrix form, $`X = W x`$ with entries
 
 $$
 W_{kn} = e^{-2\pi i kn / N}.
@@ -40,7 +40,7 @@ $$
 x_n = \frac{1}{N} \sum_{k=0}^{N-1} X_k \, e^{2\pi i kn / N}.
 $$
 
-For $N = 2^m$, the radix-2 FFT evaluates the same $X_k$ in $O(N \log N)$ operations. Frequency bins map to Hertz through the sampling rate $f_s$:
+For $`N = 2^m`$, the radix-2 FFT evaluates the same $`X_k`$ in $`O(N \log N)`$ operations. Frequency bins map to Hertz through the sampling rate $`f_s`$:
 
 $$
 f_k = \frac{k}{N} f_s,
@@ -76,7 +76,7 @@ docs/                 # use-case write-up with equations
 Design choices:
 
 - **Separation of concerns** — transform kernels, spectral helpers, and signal fixtures are independent modules.
-- **Explicit algorithms** — matrix DFT preserves the original pedagogical intent; an iterative radix-2 FFT adds the practical $O(N\log N)$ path without recursion.
+- **Explicit algorithms** — matrix DFT preserves the original pedagogical intent; an iterative radix-2 FFT adds the practical $`O(N\log N)`$ path without recursion.
 - **Reference validation** — every transform path is checked against `numpy.fft` in automated tests (GitHub Actions CI on Python 3.10–3.12).
 - **Reproducible demo signal** — replaces the unversioned `funcion.dat` from the legacy script.
 
@@ -108,7 +108,7 @@ X = fft(y)
 
 ## Validation snapshot
 
-On the bundled multi-tone demo ($5\,\mathrm{Hz}$ + $12\,\mathrm{Hz}$), the custom FFT matches `numpy.fft.fft` to machine precision (max absolute error $\sim 10^{-14}$). Magnitude peaks appear at the injected tones; round-trip DFT ↔ IDFT recovers the original samples.
+On the bundled multi-tone demo ($`5\,\mathrm{Hz}`$ + $`12\,\mathrm{Hz}`$), the custom FFT matches `numpy.fft.fft` to machine precision (max absolute error $`\sim 10^{-14}`$). Magnitude peaks appear at the injected tones; round-trip DFT ↔ IDFT recovers the original samples.
 
 ![Time series and magnitude spectrum for the demo multi-tone signal](docs/figures/spectrum_demo.png)
 
