@@ -55,11 +55,7 @@ def sample_signal(
     duration: float = 1.0,
     seed: int = 7,
 ) -> tuple[NDArray[np.floating], NDArray[np.floating], float]:
-    """Canonical demo signal: 5 Hz + 12 Hz tones with light noise.
-
-    Replaces the legacy ``funcion.dat`` fixture that was never versioned
-    in the original repository.
-    """
+    """Canonical demo signal: 5 Hz + 12 Hz tones with light noise."""
     t, y = multi_tone(
         (5.0, 12.0),
         (1.0, 0.55),

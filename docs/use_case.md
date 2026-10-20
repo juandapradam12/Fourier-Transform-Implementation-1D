@@ -2,9 +2,22 @@
 
 ## Context
 
-The original artifact was a short Spanish notebook-style script that loaded an external `funcion.dat` file and applied a hand-written DFT matrix. That fixture was never committed, so the repository could not reproduce a spectrum on a clean clone.
+Many one-dimensional signals of interest — audio frames, vibration traces, or sampled solutions of ODEs — are observed as discrete sequences $`x[n]`$ at a fixed sampling rate $`f_s`$. The Discrete Fourier Transform (DFT) maps that sequence into complex coefficients $`X[k]`$ that quantify how much energy sits at each discrete frequency.
 
-This rewrite keeps the **same scientific intent**—compute $`X_k`$ from first principles—while turning the idea into a small, installable package with tests, a synthetic signal, and documentation suitable for a public portfolio.
+In matrix form the transform is the linear map $`X = W x`$ with
+
+$$
+W_{kn} = \exp\!\left(-2\pi i \frac{kn}{N}\right),
+\qquad k,n = 0,\ldots,N-1.
+$$
+
+Evaluating $`W x`$ costs $`O(N^2)`$ operations. When $`N`$ is a power of two, the Cooley–Tukey FFT realizes the same map in $`O(N \log N)`$ time via iterative butterfly stages. Both views matter: the matrix form makes the mathematics explicit; the FFT makes the computation practical.
+
+The inverse DFT recovers $`x`$ from $`X`$, and Parseval’s identity links energy in time and frequency:
+
+$$
+\sum_{n=0}^{N-1} |x_n|^2 = \frac{1}{N} \sum_{k=0}^{N-1} |X_k|^2.
+$$
 
 ## Problem statement
 
@@ -54,7 +67,3 @@ with $`\varepsilon(t) \sim \mathcal{N}(0, 0.08^2)`$, $`f_s = 256\,\mathrm{Hz}`$,
 3. $`\mathrm{IDFT}(\mathrm{DFT}(x)) \approx x`$ (round trip).
 4. Parseval: $`\sum_n |x_n|^2 = N^{-1}\sum_k |X_k|^2`$.
 5. Magnitude peaks recover the injected tones within bin resolution.
-
-## Why this is a portfolio piece
-
-It shows end-to-end ownership of a classical numerical method: correct equations, deliberate software boundaries, automated oracle checks, and a documented use case rather than a disposable script.

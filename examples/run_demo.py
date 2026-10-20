@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the portfolio demo: time series, magnitude spectrum, NumPy cross-check."""
+"""Run the demo: time series, magnitude spectrum, NumPy cross-check."""
 
 from __future__ import annotations
 

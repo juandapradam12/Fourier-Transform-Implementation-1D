@@ -2,7 +2,7 @@
 
 From-scratch **1-D Discrete Fourier Transform (DFT)** and **iterative radix-2 FFT** in Python — a small signal-analysis package with clean architecture, NumPy-validated spectra, and runtime benchmarks that make the $`O(N^2)`$ vs $`O(N\log N)`$ trade-off visible.
 
-Built as a portfolio use case from an early academic script: implement the transform from first principles, expose a focused analysis API, and verify results on a controlled multi-tone signal.
+Implements the transform from first principles, exposes a focused analysis API, and verifies results on a controlled multi-tone signal.
 
 ---
 
@@ -76,9 +76,9 @@ docs/                 # use-case write-up with equations
 Design choices:
 
 - **Separation of concerns** — transform kernels, spectral helpers, and signal fixtures are independent modules.
-- **Explicit algorithms** — matrix DFT preserves the original pedagogical intent; an iterative radix-2 FFT adds the practical $`O(N\log N)`$ path without recursion.
+- **Explicit algorithms** — matrix DFT makes the linear map $`X = W x`$ transparent; an iterative radix-2 FFT adds the practical $`O(N\log N)`$ path without recursion.
 - **Reference validation** — every transform path is checked against `numpy.fft` in automated tests (GitHub Actions CI on Python 3.10–3.12).
-- **Reproducible demo signal** — replaces the unversioned `funcion.dat` from the legacy script.
+- **Reproducible demo signal** — synthetic multi-tone fixtures keep every clone runnable without external data files.
 
 ---
 
